@@ -1,9 +1,12 @@
 node_modules
+.DS_Store
 .env
+.openzeppelin
 
 # Hardhat files
 /cache
 /artifacts
+/deployments
 
 # TypeChain files
 /typechain

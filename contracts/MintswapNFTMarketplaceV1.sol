@@ -11,7 +11,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeab
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
-contract MintswapNFTMarketplaceV1 is
+contract MintSwapNFTMarketplaceV1 is
     AccessControlEnumerableUpgradeable,
     PausableUpgradeable,
     ReentrancyGuardUpgradeable
@@ -221,9 +221,11 @@ contract MintswapNFTMarketplaceV1 is
         uint128 pricePerItem,
         address paymentToken
     );
-
+    
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() initializer {}
+    constructor() {
+        _disableInitializers();
+    }
 
     /// @notice Perform initial contract setup
     /// @dev    The initializer modifier ensures this is only called once, the owner should confirm this was properly
@@ -404,7 +406,6 @@ contract MintswapNFTMarketplaceV1 is
         }
 
         _createBidWithoutEvent(
-            _nftAddress,
             _quantity,
             _pricePerItem,
             _expirationTime,
@@ -440,7 +441,6 @@ contract MintswapNFTMarketplaceV1 is
         }
 
         _createBidWithoutEvent(
-            _nftAddress,
             _quantity,
             _pricePerItem,
             _expirationTime,
@@ -459,7 +459,6 @@ contract MintswapNFTMarketplaceV1 is
     }
 
     function _createBidWithoutEvent(
-        address _nftAddress,
         uint64 _quantity,
         uint128 _pricePerItem,
         uint64 _expirationTime,
