@@ -2,6 +2,11 @@
   "name": "mintswap-nft-marketplace",
   "version": "1.0.0",
   "license": "MIT",
+  "scripts": {
+      "clean": "hardhat clean",
+      "compile": "hardhat compile",
+      "local-test": "hardhat test --network localhost"
+  },
   "dependencies": {
     "@aws-sdk/client-kms": "^3.504.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",

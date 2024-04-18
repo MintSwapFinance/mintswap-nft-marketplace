@@ -15,12 +15,12 @@ const config: HardhatUserConfig = {
     networks: {
         hardhat: { },
         localhost: {
-            url: 'http://localhost:8545',
-            chainId: 61337,
+            url: 'http://127.0.0.1:8545',
+            chainId: 31337,
         },
         mintTest: {
-            url: `${process.env.MINT_TESTNET_URL}`,
-            chainId: 1686,
+            url: "https://sepolia-testnet-rpc.mintchain.io",
+            chainId: 1687,
             accounts: [ String(process.env.PRIVATE_KEY_DEPLOYER), String(process.env.PRIVATE_KEY_SELLER), String(process.env.PRIVATE_KEY_BUYER) ]
         },
     },
@@ -42,6 +42,15 @@ const config: HardhatUserConfig = {
             },
             {
                 version: '0.7.6',
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 200,
+                    },
+                },
+            },
+            {
+                version: '0.6.0',
                 settings: {
                     optimizer: {
                         enabled: true,
