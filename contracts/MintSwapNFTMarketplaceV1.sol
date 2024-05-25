@@ -343,7 +343,7 @@ contract MintSwapNFTMarketplaceV1 is
 
     function cancelListing(
         CancelListParams[] calldata _cancelListParams
-    ) external nonReentrant {
+    ) external {
         for (uint256 i = 0; i < _cancelListParams.length; i++) {
             CancelListParams calldata _cancelListParam = _cancelListParams[i];
             delete (
@@ -361,7 +361,7 @@ contract MintSwapNFTMarketplaceV1 is
 
     function cancelBids(
         CancelBidParams[] calldata _cancelBidParams
-    ) external nonReentrant {
+    ) external {
         for (uint256 i = 0; i < _cancelBidParams.length; i++) {
             CancelBidParams calldata _cancelBidParam = _cancelBidParams[i];
             if (_cancelBidParam.bidType == BidType.COLLECTION) {
