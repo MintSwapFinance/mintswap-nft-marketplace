@@ -95,6 +95,9 @@ contract MintSwapNFTMarketplaceV1 is
     /// @notice Indicates if bid related functions are active.
     bool public areBidsActive;
 
+    /// @notice mapping for ERC7765: nftAddress => boolean
+    mapping(address => bool) public erc7765Collections;
+
     /// @notice The fee portion was updated
     /// @param  fee new fee amount (in units of basis points)
     event UpdateFee(uint256 fee);
@@ -543,6 +546,16 @@ contract MintSwapNFTMarketplaceV1 is
                 supportPaymentToken[_acceptBidParams.paymentToken],
             "Wrong payment token"
         );
+        
+        // Validate ERC7765
+        if (erc7765Collections[_acceptBidParams.nftAddress]) {
+            (bool success, bytes memory returnData) = _acceptBidParams.nftAddress.call(
+                abi.encodeWithSignature("hasBeenExercised(uint256,uint256)", _acceptBidParams.tokenId, 1)
+            );
+            require(success, "Checking exercise was not successful");
+            bool _hasBeenExercised = abi.decode(returnData, (bool));
+            require(!_hasBeenExercised, "NFT had been Exercised");
+        }
 
         // Transfer NFT to buyer, also validates owner owns it, and token is approved for trading
         IERC165Upgradeable nft165 = IERC165Upgradeable(
@@ -829,6 +842,15 @@ contract MintSwapNFTMarketplaceV1 is
 
         emit UpdateFee(_newFee);
         emit UpdateFeeWithCollectionOwner(_newFeeWithCollectionOwner);
+    }
+
+    /// @notice Add ERC7765 collection to prohibit collection bidding in certain cases.
+    /// @dev    This is callable only by the owner.
+    /// @param  _nftAddress the NFT contract address
+    function addAddressToERC7765Collections(
+        address _nftAddress
+    ) external onlyRole(MARKETPLACE_ADMIN_ROLE) {
+        erc7765Collections[_nftAddress] = true;
     }
 
     /// @notice Updates the fee amount which is collected during sales fro a specific collection
