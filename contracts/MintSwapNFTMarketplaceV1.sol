@@ -10,6 +10,8 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
+
 
 contract MintSwapNFTMarketplaceV1 is
     AccessControlEnumerableUpgradeable,
@@ -17,6 +19,7 @@ contract MintSwapNFTMarketplaceV1 is
     ReentrancyGuardUpgradeable
 {
     using SafeERC20Upgradeable for IERC20Upgradeable;
+    using Address for address;
 
     struct ListingOrBid {
         /// @dev number of tokens for sale or requested (1 if ERC-721 token is active for sale) (for bids, quantity for ERC-721 can be greater than 1)
@@ -549,12 +552,13 @@ contract MintSwapNFTMarketplaceV1 is
         
         // Validate ERC7765
         if (erc7765Collections[_acceptBidParams.nftAddress]) {
-            (bool success, bytes memory returnData) = _acceptBidParams.nftAddress.call(
-                abi.encodeWithSignature("hasBeenExercised(uint256,uint256)", _acceptBidParams.tokenId, 1)
+            bytes memory returnData = Address.functionStaticCall(
+                _acceptBidParams.nftAddress, 
+                abi.encodeWithSignature("hasBeenExercised(uint256,uint256)", _acceptBidParams.tokenId, 1),
+                "Check exercise was not successful"
             );
-            require(success, "Checking exercise was not successful");
             bool _hasBeenExercised = abi.decode(returnData, (bool));
-            require(!_hasBeenExercised, "NFT had been Exercised");
+            require(!_hasBeenExercised, "NFT had been exercised");
         }
 
         // Transfer NFT to buyer, also validates owner owns it, and token is approved for trading
