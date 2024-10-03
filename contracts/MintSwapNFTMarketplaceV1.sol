@@ -558,7 +558,7 @@ contract MintSwapNFTMarketplaceV1 is
                 "Check exercise was not successful"
             );
             bool _hasBeenExercised = abi.decode(returnData, (bool));
-            require(!_hasBeenExercised, "NFT had been exercised");
+            require(!_hasBeenExercised, "The privilege of the NFT has been exercised");
         }
 
         // Transfer NFT to buyer, also validates owner owns it, and token is approved for trading
